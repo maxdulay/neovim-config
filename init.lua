@@ -10,34 +10,13 @@ if not vim.loop.fs_stat(lazypath) then
   }) end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
-	{
-	    'goolord/alpha-nvim',
-	    config = function ()
-		require'alpha-config'
-		require'alpha'.setup(require'alpha.themes.dashboard'.config)
-	    end
-	},
-	"preservim/nerdtree",
-	{
-	    'nvim-telescope/telescope.nvim', tag = '0.1.5',
-	      dependencies = { 'nvim-lua/plenary.nvim' }
-	},	
-	"tpope/vim-surround",
-	'Konfekt/vim-alias',
+	-- LSP setup
 	"neovim/nvim-lspconfig",
-	{
-		'ggandor/leap.nvim',
-		config = function ()
-			require('leap').create_default_mappings()
-		end
-	},
 	'hrsh7th/cmp-nvim-lsp',
 	'hrsh7th/cmp-buffer',
 	'hrsh7th/cmp-path',
 	'hrsh7th/cmp-cmdline',
 	'hrsh7th/nvim-cmp',
-	--'hrsh7th/cmp-vsnip',
-	--'hrsh7th/vim-vsnip',
 	'L3MON4D3/LuaSnip',
 	{
 	      'nvim-treesitter/nvim-treesitter',
@@ -54,34 +33,58 @@ require("lazy").setup({
 		'mfussenegger/nvim-jdtls',
 		ft = 'java'
 	},
-	-- lazy.nvim
+	{
+		"folke/trouble.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" }
+	},
+	-- File navigation tools 
+	{
+	    'goolord/alpha-nvim',
+	    config = function ()
+		require'alpha-config'
+		require'alpha'.setup(require'alpha.themes.dashboard'.config)
+	    end
+	},
+	"preservim/nerdtree",
+	{
+	    'nvim-telescope/telescope.nvim', tag = '0.1.5',
+	      dependencies = { 'nvim-lua/plenary.nvim' }
+	},	
+	-- Editing tools 
+	"tpope/vim-surround",
+	{
+		'ggandor/leap.nvim',
+		config = function ()
+			require('leap').create_default_mappings()
+		end
+	},
+	'Konfekt/vim-alias',
+	'tpope/vim-fugitive',
+	'tpope/vim-eunuch',
 	{
 	  "folke/noice.nvim",
 	  event = "VeryLazy",
 	  opts = {
-	    -- add any options here
 	  },
 	  dependencies = {
-	    -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 	    "MunifTanjim/nui.nvim",
-	    -- OPTIONAL:
-	    --   `nvim-notify` is only needed, if you want to use the notification view.
-	    --   If not available, we use `mini` as the fallback
 	    "rcarriga/nvim-notify",
 	   }
  	},
-	'tpope/vim-surround',
-	'tpope/vim-fugitive',
-	'tpope/vim-eunuch',
-	'ThePrimeagen/vim-be-good',
+	-- Aesthetics 
 	'nvim-lualine/lualine.nvim',
 	'nvim-tree/nvim-web-devicons',
-	'goolord/alpha-nvim',
 	'lukas-reineke/indent-blankline.nvim',
 	{
 		'akinsho/bufferline.nvim',
 		version = "*", 
 		dependencies = 'nvim-tree/nvim-web-devicons',
+	},
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 1000,
+		opts = {},
 	},
 	{
 	  "epwalsh/obsidian.nvim",
@@ -96,11 +99,9 @@ require("lazy").setup({
 	  --   "BufNewFile path/to/my-vault/**.md",
 	  -- },
 	  dependencies = {
-	    -- Required.
-	    "nvim-lua/plenary.nvim",
-	    "nvim-telescope/telescope.nvim"
-	    -- see below for full list of optional dependencies 👇
-    }
+		  "nvim-lua/plenary.nvim",
+		  "nvim-telescope/telescope.nvim"
+	  }
 	},
 	{
 		"iurimateus/luasnip-latex-snippets.nvim",
@@ -127,20 +128,14 @@ require("lazy").setup({
 		end,
 	},
 
-	{
-	"folke/tokyonight.nvim",
-	lazy = false,
-	priority = 1000,
-	opts = {},}
-	
 }	)
+-- Configs and setups
 require("luasnip.loaders.from_vscode").lazy_load()
 require("luasnip.loaders.from_snipmate").lazy_load()
 require("obsidian-config")
 require("luasnip-config")
 require("lsp-config")
 require("ibl").setup()
---require('nvim-treesitter')
 require("cmp").setup()
 require("NERDTree-config")
 require('keybindings')
@@ -151,6 +146,7 @@ require('tokyonight').setup {
 	transparent = vim.g.neovide == nil}
 require("bufferline-config")
 require("vsnip-config")
+-- vim settings
 vim.cmd('colorscheme tokyonight')
 vim.cmd("set number")
 vim.cmd("syntax on")
