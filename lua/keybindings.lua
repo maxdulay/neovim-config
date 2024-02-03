@@ -17,14 +17,15 @@ vim.cmd("inoremap <F4> <esc>:split<CR>:res -20<CR>:terminal<CR>")
 -- Python
 vim.cmd("autocmd FileType python nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
 vim.cmd("autocmd FileType python inoremap <F5> <esc>:w<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
+vim.cmd("autocmd FileType python nnoremap <F6> :w<CR>:bd term<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
+vim.cmd("autocmd FileType python inoremap <F6> <esc>:w<CR>:bd term<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
 -- Java
 vim.cmd("autocmd FileType java nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal java %<CR>")
 vim.cmd("autocmd FileType java inoremap <F5> <esc>:w<CR>:split<CR>:res -20<CR>:terminal java %<CR>")
 -- Racket/scheme
 -- 	Use F6 to run in REPL
 vim.cmd("autocmd FileType eopl set filetype=scheme")
-vim.cmd("autocmd FileType racket nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal racket %<CR>")
-vim.cmd("autocmd FileType racket nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal racket %<CR>")
+vim.cmd("autocmd FileType racket set filetype=scheme")
 vim.cmd("autocmd FileType scheme inoremap <F5> <esc>:w<CR>:split<CR>:res -20<CR>:terminal racket %<CR>")
 vim.cmd("autocmd FileType scheme inoremap <F5> <esc>:w<CR>:split<CR>:res -20<CR>:terminal racket %<CR>")
 vim.cmd("autocmd FileType scheme inoremap <F6> <esc>:w<CR>:split<CR>:res -20<CR>:terminal racket -i -f <(tail -n +2 %)<CR>")

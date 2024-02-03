@@ -6,6 +6,7 @@ require('mason-lspconfig').setup({
   local cmp = require'cmp'
 
   cmp.setup({
+    
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
@@ -16,8 +17,8 @@ require('mason-lspconfig').setup({
       end,
     },
     window = {
-      -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
+       completion = cmp.config.window.bordered(),
+       documentation = cmp.config.window.bordered(),
     },
     mapping = cmp.mapping.preset.insert({
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
