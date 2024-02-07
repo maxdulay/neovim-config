@@ -30,12 +30,27 @@ require("lazy").setup({
 	'williamboman/mason.nvim',
 	'williamboman/mason-lspconfig.nvim',
 	{
+		"folke/trouble.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" }
+	},
+	-- Testing
+	{
+		"nvim-neotest/neotest",
+		dependencies = {
+		"nvim-lua/plenary.nvim",
+		"antoinemadec/FixCursorHold.nvim",
+		"nvim-treesitter/nvim-treesitter"
+		},
+		ft = 'java'
+	},
+	-- Java
+	{
 		'mfussenegger/nvim-jdtls',
 		ft = 'java'
 	},
 	{
-		"folke/trouble.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" }
+		'rcasia/neotest-java',
+		ft = 'java'
 	},
 	-- File navigation tools 
 	{
@@ -104,7 +119,7 @@ require("lazy").setup({
 	  }
 	},
 	{
-		"iurimateus/luasnip-latex-snippets.nvim",
+		"maxdulay/luasnip-latex-snippets.nvim",
 		dependencies = {"L3MON4D3/LuaSnip", 'saadparwaiz1/cmp_luasnip'},
 		ft = "markdown",
 		config = function()

@@ -1,6 +1,6 @@
 require('mason').setup()
 require('mason-lspconfig').setup({
-    ensure_installed = { 'pyright', 'jdtls' }
+    ensure_installed = { 'pyright', 'jdtls', 'html' }
 })
 
   local cmp = require'cmp'
@@ -71,6 +71,6 @@ require('mason-lspconfig').setup({
     require('lspconfig')['pyright'].setup {
     capabilities = capabilities
   }
---    require('lspconfig')['jdtls'].setup {
- --   capabilities = capabilities
- -- }
+    require('lspconfig')['html'].setup {
+    capabilities = capabilities
+  }
