@@ -4,6 +4,8 @@ vim.cmd("autocmd FileType markdown set spelllang=en_us")
 vim.cmd("autocmd FileType markdown inoremap <C-l> <c-g>u<Esc>[s1z=']a<c-g>u")
 vim.cmd("Alias backup G<Space>add<Space>.|G<Space>commit<Space>-a<Space>-m<Space>'Backup'|G<Space>push")
 vim.cmd("Alias os ObsidianQuickSwitch") 
+vim.cmd("Alias oo ObsidianOpen") 
+vim.cmd("Alias od ObsidianToday") 
 vim.cmd("Alias notes vsplit|ObsidianQuickSwitch")
 vim.cmd("Alias nts vsplit|ObsidianQuickSwitch")
 require("obsidian").setup({

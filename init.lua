@@ -1,15 +1,26 @@
+
+-- Example for configuring Neovim to load user-installed installed Lua rocks:
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
     "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "https://github.com/folke/lazy.nvim.git", "--branch=stable", -- latest stable release
     lazypath,
   }) end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
+	{
+	    'glacambre/firenvim',
+
+	    -- Lazy load firenvim
+	    -- Explanation: https://github.com/folke/lazy.nvim/discussions/463#discussioncomment-4819297
+	    lazy = not vim.g.started_by_firenvim,
+	    build = function()
+		vim.fn["firenvim#install"](0)
+	    end
+	},
 	-- LSP setup
 	"neovim/nvim-lspconfig",
 	'hrsh7th/cmp-nvim-lsp',
@@ -66,7 +77,7 @@ require("lazy").setup({
 	      dependencies = { 'nvim-lua/plenary.nvim' }
 	},	
 	-- Editing tools 
-	"tpope/vim-surround",
+	-- "tpope/vim-surround",
 	{
 		'ggandor/leap.nvim',
 		config = function ()
@@ -79,6 +90,7 @@ require("lazy").setup({
 	{
 	  "folke/noice.nvim",
 	  event = "VeryLazy",
+	  enabled = not vim.g.started_by_firenvim,
 	  opts = {
 	  },
 	  dependencies = {
@@ -94,6 +106,7 @@ require("lazy").setup({
 		'akinsho/bufferline.nvim',
 		version = "*", 
 		dependencies = 'nvim-tree/nvim-web-devicons',
+--		enabled = not vim.g.started_by_firenvim,
 	},
 	{
 		"folke/tokyonight.nvim",
@@ -117,6 +130,14 @@ require("lazy").setup({
 		  "nvim-lua/plenary.nvim",
 		  "nvim-telescope/telescope.nvim"
 	  }
+	},
+	{
+		"jbyuki/nabla.nvim",
+		ft = "markdown",
+	},
+	{
+		"3rd/image.nvim",
+		ft = "markdown"
 	},
 	{
 		"maxdulay/luasnip-latex-snippets.nvim",
@@ -150,7 +171,8 @@ require('tokyonight').setup {
 	transparent = vim.g.neovide == nil}
 require("bufferline-config")
 require("vsnip-config")
--- vim settings
+-- default config
+ -- vim settings
 vim.cmd('colorscheme tokyonight')
 vim.cmd("set number")
 vim.cmd("syntax on")
