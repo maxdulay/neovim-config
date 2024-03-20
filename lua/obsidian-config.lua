@@ -1,7 +1,7 @@
 vim.cmd("autocmd FileType markdown set conceallevel=2")
 vim.cmd("autocmd FileType markdown setlocal spell")
 vim.cmd("autocmd FileType markdown set spelllang=en_us")
-vim.cmd("autocmd FileType markdown inoremap <C-l> <c-g>u<Esc>[s1z=']a<c-g>u")
+vim.cmd("autocmd FileType markdown inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u")
 vim.cmd("Alias backup G<Space>add<Space>.|G<Space>commit<Space>-a<Space>-m<Space>'Backup'|G<Space>push")
 vim.cmd("Alias os ObsidianQuickSwitch") 
 vim.cmd("Alias oo ObsidianOpen") 
@@ -16,17 +16,15 @@ require("obsidian").setup({
     workspaces = {
     {
       name = "Notes",
-      path = "~/Documents/Obsidian/Notes",
+      path = "/home/maxdu/Documents/Obsidian/Notes",
     },
   },
 
   -- Alternatively - and for backwards compatibility - you can set 'dir' to a single path instead of
   -- 'workspaces'. For example:
   -- dir = "~/vaults/work",
-
   -- Optional, set to true to use the current directory as a vault; otherwise
   -- the first workspace is opened by default.
-  detect_cwd = false,
 
   -- Optional, if you keep notes in a specific subdirectory of your vault.
   -- notes_subdir = "notes",
@@ -47,6 +45,7 @@ require("obsidian").setup({
   },
 
   -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
+  --new_notes_location = "notes_subdir",
   completion = {
     -- Set to false to disable completion.
     nvim_cmp = true,
@@ -57,7 +56,6 @@ require("obsidian").setup({
     -- Where to put new notes created from completion. Valid options are
     --  * "current_dir" - put new notes in same directory as the current buffer.
     --  * "notes_subdir" - put new notes in the default notes subdirectory.
-    new_notes_location = "current_dir",
 
     -- Control how wiki links are completed with these (mutually exclusive) options:
     --
@@ -138,14 +136,6 @@ require("obsidian").setup({
     time_format = "%H:%M",
     -- A map for custom variables, the key should be the variable and the value a function
     substitutions = {},
-  },
-
-  -- Optional, customize the backlinks interface.
-  backlinks = {
-    -- The default height of the backlinks pane.
-    height = 10,
-    -- Whether or not to wrap lines.
-    wrap = true,
   },
 
   -- Optional, by default when you use `:ObsidianFollowLink` on a link to an external
@@ -230,16 +220,16 @@ require("obsidian").setup({
   },
 
   -- Specify how to handle attachments.
-  attachments = {
+attachments = {
     -- The default folder to place images in via `:ObsidianPasteImg`.
     -- If this is a relative path it will be interpreted as relative to the vault root.
     -- You can always override this per image by passing a full path to the command instead of just a filename.
     img_folder = "assets/imgs",  -- This is the default
     -- A function that determines the text to insert in the note when pasting an image.
-    -- It takes two arguments, the `obsidian.Client` and a plenary `Path` to the image file.
+    -- It takes two arguments, the `obsidian.Client` and an `obsidian.Path` to the image file.
     -- This is the default implementation.
     ---@param client obsidian.Client
-    ---@param path Path the absolute path to the image file
+    ---@param path obsidian.Path the absolute path to the image file
     ---@return string
     img_text_func = function(client, path)
       local link_path
@@ -255,12 +245,4 @@ require("obsidian").setup({
       return string.format("![%s](%s)", display_name, link_path)
     end,
   },
-
-  -- Optional, set the YAML parser to use. The valid options are:
-  --  * "native" - uses a pure Lua parser that's fast but potentially misses some edge cases.
-  --  * "yq" - uses the command-line tool yq (https://github.com/mikefarah/yq), which is more robust
-  --    but much slower and needs to be installed separately.
-  -- In general you should be using the native parser unless you run into a bug with it, in which
-  -- case you can temporarily switch to the "yq" parser until the bug is fixed.
-  yaml_parser = "native",
 })

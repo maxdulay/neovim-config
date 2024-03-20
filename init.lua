@@ -15,7 +15,7 @@ require("lazy").setup({
 	    'glacambre/firenvim',
 
 	    -- Lazy load firenvim
-	    -- Explanation: https://github.com/folke/lazy.nvim/discussions/463#discussioncomment-4819297
+	    -- Explanation: https://github.com/folke/lazy.nvim/discussions/463#discussioncomment-4819297 
 	    lazy = not vim.g.started_by_firenvim,
 	    build = function()
 		vim.fn["firenvim#install"](0)
@@ -168,7 +168,13 @@ require('tree-sitter')
 require('lualine').setup()
 require('tokyonight').setup {
 	style = "night",
-	transparent = vim.g.neovide == nil}
+	--transparent = vim.g.neovide == nil}
+	-- transparent = true,
+	on_colors = function(colors)
+	    colors.bg = "#000000"
+	    colors.bg_float = "#000000"
+	end
+}
 require("bufferline-config")
 require("vsnip-config")
 -- default config
@@ -191,4 +197,9 @@ vim.cmd("set clipboard=unnamedplus")
 vim.cmd("set linebreak")
 vim.opt.termguicolors = true
 
-
+if vim.g.neovide then 
+	vim.opt.linespace=-1
+end
+if vim.g.started_by_firenvim then 
+	vim.opt.linespace=-3
+end
