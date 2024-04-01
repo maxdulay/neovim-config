@@ -50,14 +50,21 @@ require("lazy").setup({
 		dependencies = {
 		"nvim-lua/plenary.nvim",
 		"antoinemadec/FixCursorHold.nvim",
-		"nvim-treesitter/nvim-treesitter"
+		"nvim-treesitter/nvim-treesitter",
+		"nvim-neotest/nvim-nio"
 		},
 		ft = 'java'
+	},
+	{
+		'mfussenegger/nvim-dap'
 	},
 	-- Java
 	{
 		'mfussenegger/nvim-jdtls',
-		ft = 'java'
+		ft = 'java',
+		dependencies = {
+		'mfussenegger/nvim-dap',
+		},
 	},
 	{
 		'rcasia/neotest-java',
