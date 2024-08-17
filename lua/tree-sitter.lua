@@ -1,4 +1,7 @@
 vim.treesitter.language.register('scheme', 'racket')  -- the someft filetype will use the python parser and queries.
+vim.filetype.add({
+  pattern = { [".*/hypr/.*%.conf"] = "hyprlang" },
+})
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the five listed parsers should always be installed)
   ensure_installed = { "python", "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "java" },

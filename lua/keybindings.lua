@@ -21,7 +21,7 @@ vim.cmd("inoremap <F4> <esc>:split<CR>:res -20<CR>:terminal<CR>")
 -- vim.cmd("autocmd FileType markdown vmap <F5> :!column -t -s '|' -o '|'")
 vim.cmd("autocmd Filetype markdown nnoremap <C-p> :lua require('nabla').popup()<CR>")
 vim.cmd("autocmd FileType markdown nnoremap <F5> :lua require'nabla'.enable_virt({autogen = true, silent = true,})<CR>")
-vim.cmd("autocmd FileType markdown nnoremap <F6> :!pandoc % -o ~/Documents/%:t:r.pdf<CR>")
+vim.cmd("autocmd FileType markdown nnoremap <F6> :!pandoc --wrap=preserve % -o ~/Documents/%:t:r.pdf<CR>")
 -- Python
 vim.cmd("autocmd FileType python nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
 vim.cmd("autocmd FileType python inoremap <F5> <esc>:w<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")

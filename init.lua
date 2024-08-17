@@ -47,6 +47,7 @@ require("lazy").setup({
 	-- Testing
 	{
 		"nvim-neotest/neotest",
+		lazy = true;
 		dependencies = {
 		"nvim-lua/plenary.nvim",
 		"antoinemadec/FixCursorHold.nvim",
@@ -61,6 +62,7 @@ require("lazy").setup({
 	-- Java
 	{
 		'mfussenegger/nvim-jdtls',
+		lazy = true;
 		ft = 'java',
 		dependencies = {
 		'mfussenegger/nvim-dap',
@@ -68,6 +70,7 @@ require("lazy").setup({
 	},
 	{
 		'rcasia/neotest-java',
+		lazy = true;
 		ft = 'java'
 	},
 	-- File navigation tools 
@@ -147,6 +150,12 @@ require("lazy").setup({
 		ft = "markdown"
 	},
 	{
+		"pocco81/true-zen.nvim"
+		},
+	{
+		"dstein64/vim-startuptime"
+		},
+	{
 		"maxdulay/luasnip-latex-snippets.nvim",
 		dependencies = {"L3MON4D3/LuaSnip", 'saadparwaiz1/cmp_luasnip'},
 		ft = "markdown",
@@ -162,6 +171,18 @@ require("lazy").setup({
 
 }	)
 -- Configs and setups
+vim.g.firenvim_config = {
+    globalSettings = { alt = "all" },
+    localSettings = {
+        [".*"] = {
+            cmdline  = "firenvim",
+            content  = "text",
+            priority = 0,
+            selector = "textarea",
+            takeover = "never"
+        }
+    }
+}
 require("luasnip.loaders.from_vscode").lazy_load()
 require("luasnip.loaders.from_snipmate").lazy_load()
 require("obsidian-config")
@@ -204,9 +225,4 @@ vim.cmd("set clipboard=unnamedplus")
 vim.cmd("set linebreak")
 vim.opt.termguicolors = true
 
-if vim.g.neovide then 
-	vim.opt.linespace=-1
-end
-if vim.g.started_by_firenvim then 
-	vim.opt.linespace=-3
-end
+

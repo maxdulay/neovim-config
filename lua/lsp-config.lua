@@ -77,6 +77,12 @@ require('mason-lspconfig').setup({
     require('lspconfig')['julials'].setup {
     capabilities = capabilities
   }
+    require('lspconfig')['nil_ls'].setup {
+    capabilities = capabilities
+  }
+    require('lspconfig')['rust_analyzer'].setup {
+    capabilities = capabilities
+  }
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)

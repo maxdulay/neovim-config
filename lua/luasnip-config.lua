@@ -113,6 +113,12 @@ ls.add_snippets(nil, {
 		}),
 	s("method", {
 		t("public "), i(1), t(" "), i(2), t("("), i(3),t{") {","\t"}, i(4), t{"", "}"},
+		}),
+	s("main", {
+		t("public static void main(String[] args) {", ""), i(1), t{"", "}"},
+		}),
+	s("print", {
+		t("System.out.println("), i(1), t{");", ""},
 		})
 	
 },
