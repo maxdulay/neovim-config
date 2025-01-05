@@ -30,3 +30,46 @@ require("image").setup({
   tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
   hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
 })
+require('render-markdown').setup({
+    -- Checkboxes are a special instance of a 'list_item' that start with a 'shortcut_link'
+    -- There are two special states for unchecked & checked defined in the markdown grammar
+	
+    bullet = {
+        -- Turn on / off list bullet rendering
+        enabled = true,
+        icons = { '●', '○', '◆', '◇' },
+        -- Padding to add to the left of bullet point
+        left_pad = 0,
+        -- Padding to add to the right of bullet point
+        right_pad = 1,
+        -- Highlight for the bullet icon
+        highlight = 'RenderMarkdownBullet',
+    },
+    checkbox = {
+        -- Turn on / off checkbox state rendering
+        enabled = true,
+    },
+    link = {
+		enabled = true,
+	},
+    maid = {
+		enabled = true,
+	},
+
+})
+require("diagram").setup({
+  integrations = {
+    require("diagram.integrations.markdown"),
+    require("diagram.integrations.neorg"),
+  },
+  renderer_options = {
+    mermaid = {
+    },
+    plantuml = {
+      charset = "utf-8",
+    },
+    d2 = {
+      theme_id = 1,
+    },
+  },
+})
