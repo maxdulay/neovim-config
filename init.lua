@@ -211,7 +211,7 @@ require("lazy").setup({
 	-- Aesthetics
 	'nvim-lualine/lualine.nvim',
 	'nvim-tree/nvim-web-devicons',
-	'lukas-reineke/indent-blankline.nvim',
+	-- 'lukas-reineke/indent-blankline.nvim',
 	-- {
 	-- 	'akinsho/bufferline.nvim',
 	-- 	lazy = true,
@@ -304,6 +304,7 @@ require("lazy").setup({
 				enabled = true,
 				win = { style = "terminal" },
 			},
+			indent = { enabled = true },
 		},
 	},
 })
@@ -326,8 +327,6 @@ require("pomo-config")
 require("obsidian-config")
 require("luasnip-config")
 require("lsp-config")
-require("ibl").setup()
--- require("cmp").setup()
 require('keybindings')
 require('tree-sitter')
 require('lualine').setup()
