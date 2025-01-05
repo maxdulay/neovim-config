@@ -21,6 +21,7 @@ vim.cmd("Alias vifm Vifm")
 vim.cmd("Alias vs vs|Vifm")
 vim.cmd("Alias ff Telescope<Space>find_files")
 vim.cmd("Alias qq bd!")
+vim.cmd("Alias G lua<Space>Snacks.lazygit.open()")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 vim.keymap.set("n", "<C-j>", "<C-w>j")
 vim.keymap.set("n", "<C-k>", "<C-w>k")
@@ -29,7 +30,10 @@ vim.cmd("Alias bl BufferLinePick")
 vim.cmd("Alias bld BufferLinePickClose")
 vim.cmd("Alias bdd BufferLineCloseOthers")
 vim.keymap.set("n", "<F4>", ":lua Snacks.terminal.toggle()<CR>")
-vim.keymap.set("t", "F4", "<C-\\><C-n>:lua Snacks.terminal.toggle()<CR>")
+vim.keymap.set("t", "<F4>", "<C-\\><C-n>:lua Snacks.terminal.toggle()<CR>")
+vim.keymap.set("t", "<F5>", "<C-\\><C-n>:lua Snacks.terminal.toggle()<CR>")
+-- terminal
+vim.cmd("autocmd Filetype term nnoremap <F5> :lua Snacks.terminal.toggle()<CR>")
 -- markdown
 -- vim.cmd("autocmd FileType markdown vmap <F5> :!column -t -s '|' -o '|'")
 vim.cmd("autocmd Filetype markdown nnoremap <C-p> :lua require('nabla').popup()<CR>")
@@ -38,16 +42,9 @@ vim.cmd("autocmd FileType markdown nnoremap <F6> :!pandoc --wrap=preserve % -o ~
 -- rmarkdown
 vim.cmd("autocmd FileType rmd nnoremap <F7> :RSend rmarkdown::render('./%')<CR>")
 -- Python
-vim.cmd("autocmd FileType python nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
-vim.cmd("autocmd FileType python inoremap <F5> <esc>:w<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
-vim.cmd(
-	"autocmd FileType python nnoremap <F6> :w<CR>:bd! term<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
-vim.cmd(
-	"autocmd FileType python inoremap <F6> <esc>:w<CR>:bd! term<CR>:split<CR>:res -20<CR>:terminal ~/python/bin/python %<CR>")
--- Julia
-vim.cmd("autocmd FileType julia nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal julia %<CR>")
+vim.cmd("autocmd FileType python nnoremap <F5> :lua Snacks.terminal.toggle()<CR>python3 -m pdb " .. vim.fn.expand('%:p') .. "<CR>")
 -- Rust
-vim.cmd("autocmd FileType rust nnoremap <F5> :w<CR>:split<CR>:res -20<CR>:terminal cargo run %<CR>")
+vim.cmd("autocmd FileType rust nnoremap <F5> :lua Snacks.terminal.toggle()<CR>cargo build; rust-gdb " .. vim.fn.expand('%:p:h:h') .. "/target/debug/" .. vim.fn.expand('%:p:h:h:t') .. "<CR>")
 -- Java
 vim.cmd("autocmd FileType java nnoremap <F5> :w<CR>:cd %:p:h<CR>:cd ../<CR>:split<CR>:res -20<CR>:terminal java %<CR>")
 -- CPP
