@@ -40,13 +40,18 @@ vim.cmd("autocmd Filetype markdown nnoremap <C-p> :lua require('nabla').popup()<
 vim.cmd("autocmd FileType markdown nnoremap <F5> :lua require'nabla'.enable_virt({autogen = true, silent = true,})<CR>")
 vim.cmd("autocmd FileType markdown nnoremap <F6> :!pandoc --wrap=preserve % -o ~/Documents/%:t:r.pdf<CR>")
 -- rmarkdown
-vim.cmd("autocmd FileType rmd nnoremap <F7> :RSend rmarkdown::render('./%')<CR>")
+vim.cmd("autocmd FileType rmd nnoremap <F6> :RSend rmarkdown::render('" .. vim.fn.expand('%:p') .."')<CR>")
 -- Python
-vim.cmd("autocmd FileType python nnoremap <F5> :lua Snacks.terminal.toggle()<CR>python3 -m pdb " .. vim.fn.expand('%:p') .. "<CR>")
+vim.cmd("autocmd FileType python nnoremap <C-F5> :lua Snacks.terminal.toggle()<CR>python3 -m pdb " .. vim.fn.expand('%:p') .. "<CR>")
+vim.cmd("autocmd FileType python inoremap <C-F5> <esc>:lua Snacks.terminal.toggle()<CR>python3 -m pdb " .. vim.fn.expand('%:p') .. "<CR>")
+vim.cmd("autocmd FileType python nnoremap <F5> :lua Snacks.terminal.toggle()<CR>python3 " .. vim.fn.expand('%:p') .. "<CR>")
+vim.cmd("autocmd FileType python inoremap <F5> <esc>:lua Snacks.terminal.toggle()<CR>python3 " .. vim.fn.expand('%:p') .. "<CR>")
 -- Rust
-vim.cmd("autocmd FileType rust nnoremap <F5> :lua Snacks.terminal.toggle()<CR>cargo build; rust-gdb " .. vim.fn.expand('%:p:h:h') .. "/target/debug/" .. vim.fn.expand('%:p:h:h:t') .. "<CR>")
+vim.cmd("autocmd FileType rust nnoremap <C-F5> :lua Snacks.terminal.toggle()<CR>cargo build; rust-gdb " .. vim.fn.expand('%:p:h:h') .. "/target/debug/" .. vim.fn.expand('%:p:h:h:t') .. "<CR>")
+vim.cmd("autocmd FileType rust nnoremap <F5> :lua Snacks.terminal.toggle()<CR>cargo run<CR>")
+vim.cmd("autocmd FileType rust nnoremap <F6> :!cargo build<CR>")
 -- Java
-vim.cmd("autocmd FileType java nnoremap <F5> :w<CR>:cd %:p:h<CR>:cd ../<CR>:split<CR>:res -20<CR>:terminal java %<CR>")
+-- vim.cmd("autocmd FileType java nnoremap <F5> :w<CR>:cd %:p:h<CR>:cd ../<CR>:split<CR>:res -20<CR>:terminal java %<CR>")
 -- CPP
 vim.cmd(
 	"autocmd FileType cpp nnoremap <F5> :w<CR>:!cd %:p:h<CR>:split<CR>:res -20<CR>:terminal multipass exec -d /home/ubuntu/%:p:gs?/home/maxdu?Home?:h primary make; multipass exec -d /home/ubuntu/%:p:gs?/home/maxdu?Home?:h primary ./%:t:r ")
