@@ -1,4 +1,4 @@
---
+
 -- Example for configuring Neovim to load user-installed installed Lua rocks:
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -109,7 +109,7 @@ require("lazy").setup({
 				jump = function(direction) require('luasnip').jump(direction) end,
 			},
 			keymap = {
-				preset = 'enter',
+				preset = 'super-tab',
 				cmdline = {
 					preset = 'super-tab'
 				}
@@ -156,8 +156,6 @@ require("lazy").setup({
 		opts = { highlight = { enable = true }, }
 	},
 	-- 'saadparwaiz1/cmp_luasnip',
-	'williamboman/mason.nvim',
-	'williamboman/mason-lspconfig.nvim',
 	{
 		"folke/trouble.nvim",
 		lazy = true,
@@ -298,7 +296,7 @@ require("lazy").setup({
 		lazy = false,
 		opts = {
 			bigfile = { enabled = true },
-			notifier = { enabled = true },
+			notifier = { enabled = true,  style = "minimal" },
 			quickfile = { enabled = true },
 			terminal = {
 				enabled = true,
