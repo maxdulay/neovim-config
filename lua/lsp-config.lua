@@ -1,93 +1,3 @@
-require('mason').setup()
-require('mason-lspconfig').setup({
-	ensure_installed = { 'pyright', 'jdtls', 'html', 'ltex' }
-})
--- local cmp = require 'cmp'
---
--- cmp.setup({
---
--- 	snippet = {
--- 		-- REQUIRED - you must specify a snippet engine
--- 		expand = function(args)
--- 			-- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
--- 			require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
--- 			-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
--- 			-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
--- 		end,
--- 	},
--- 	window = {
--- 		-- completion = cmp.config.window.bordered(),
--- 		-- documentation = cmp.config.window.bordered(),
--- 	},
--- 	mapping = cmp.mapping.preset.insert({
--- 		['<C-b>'] = cmp.mapping.scroll_docs(-4),
--- 		['<C-f>'] = cmp.mapping.scroll_docs(4),
--- 		['<C-Space>'] = cmp.mapping.complete(),
--- 		['<C-e>'] = cmp.mapping.abort(),
--- 		['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
--- 	}),
--- 	sources = cmp.config.sources({
--- 		{ name = 'nvim_lsp' },
--- 		-- { name = 'vsnip' }, -- For vsnip users.
--- 		{ name = 'luasnip' }, -- For luasnip users.
--- 		-- { name = 'ultisnips' }, -- For ultisnips users.
--- 		-- { name = 'snippy' }, -- For snippy users.
--- 	}, {
--- 		{ name = 'buffer', max_item_count = 10 },
--- 	})
--- })
---
--- -- Set configuration for specific filetype.
--- cmp.setup.filetype('gitcommit', {
--- 	sources = cmp.config.sources({
--- 		{ name = 'git' }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
--- 	}, {
--- 		{ name = 'buffer' },
--- 	})
--- })
---
--- -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
--- cmp.setup.cmdline({ '/', '?' }, {
--- 	mapping = cmp.mapping.preset.cmdline(),
--- 	sources = {
--- 		{ name = 'buffer' }
--- 	}
--- })
---
--- -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
--- cmp.setup.cmdline(':', {
--- 	mapping = cmp.mapping.preset.cmdline(),
--- 	sources = cmp.config.sources({
--- 		{ name = 'path' }
--- 	}, {
--- 		{ name = 'cmdline' }
--- 	})
--- })
---
--- -- Set up lspconfig.
--- local capabilities = require('cmp_nvim_lsp').default_capabilities()
--- -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
--- require('lspconfig')['pyright'].setup {
--- 	capabilities = capabilities
--- }
--- require('lspconfig')['html'].setup {
--- 	capabilities = capabilities
--- }
--- require('lspconfig')['nil_ls'].setup {
--- 	capabilities = capabilities
--- }
--- require('lspconfig')['rust_analyzer'].setup {
--- 	capabilities = capabilities
--- }
--- require('lspconfig')['clangd'].setup {
--- 	capabilities = capabilities
--- }
--- require('lspconfig')['lua_ls'].setup {
--- 	capabilities = capabilities
--- }
--- require('lspconfig')['ltex'].setup {
--- 	capabilities = capabilities
--- }
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
 	callback = function(ev)
@@ -115,4 +25,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			vim.lsp.buf.format { async = true }
 		end, opts)
 	end,
+})
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+  callback = function(ev)
+    local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+    vim.notify(vim.lsp.status(), "info", {
+      id = "lsp_progress",
+      title = "LSP Progress",
+      opts = function(notif)
+        notif.icon = ev.data.params.value.kind == "end" and " "
+          or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+      end,
+    })
+  end,
 })
