@@ -1,8 +1,4 @@
-vim.treesitter.language.register('scheme', 'racket') -- the someft filetype will use the python parser and queries.
-vim.filetype.add({
-	pattern = { [".*/hypr/.*%.conf"] = "hyprlang" },
-})
-require 'nvim-treesitter.configs'.setup {
+return {
 	-- A list of parser names, or "all" (the five listed parsers should always be installed)
 	ensure_installed = { "python", "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "java" },
 
@@ -40,7 +36,7 @@ require 'nvim-treesitter.configs'.setup {
 		-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
 		-- Using this option may slow down your editor, and you may see some duplicate highlights.
 		-- Instead of true it can also be a list of languages
-		additional_vim_regex_highlighting = false,
+		additional_vim_regex_highlighting = false
 	},
 	indent = {
 		enable = true

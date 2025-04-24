@@ -1,5 +1,6 @@
-
 -- Example for configuring Neovim to load user-installed installed Lua rocks:
+--
+-- vim.g.vifm_replace_netrw = true
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -10,15 +11,35 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
+
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
+	'vuciv/golf',
 	{
 		'glacambre/firenvim',
 		-- Lazy load firenvim
 		-- Explanation: https://github.com/folke/lazy.nvim/discussions/463#discussioncomment-4819297
+		--
+		enabled = vim.g.started_by_firenvim,
 		lazy = not vim.g.started_by_firenvim,
 		build = function()
 			vim.fn["firenvim#install"](0)
+		end,
+		init = function()
+			vim.g.firenvim_config = {
+				globalSettings = { alt = "all" },
+				localSettings = {
+					[".*"] = {
+						cmdline  = "firenvim",
+						content  = "text",
+						priority = 0,
+						selector = "textarea",
+						takeover = "never",
+						filename =
+						'/tmp/{hostname%32}_{pathname%32}_{selector%32}_{timestamp%32}.md'
+					}
+				}
+			}
 		end
 	},
 	{
@@ -34,6 +55,9 @@ require("lazy").setup({
 	{
 		'neovim/nvim-lspconfig',
 		dependencies = { 'saghen/blink.cmp', },
+		-- event = {"BufReadPost", "BufNewFile"},
+		cmd = { "LspInfo", "LspInstall", "LspUninstall", "LspStart" },
+		lazy = true,
 
 		-- example using `opts` for defining servers
 		opts = {
@@ -72,8 +96,18 @@ require("lazy").setup({
 				},
 				rust_analyzer = {},
 				clangd = {},
-				ltex = {},
+				-- ltex = {
+				-- 	language = "en-US",
+				-- 	dictionary = function()
+				-- 		local path = vim.fn.expand("~/.config/nvim/spell/en.utf-8.add")
+				-- 		return {en_US = ':' .. path}
+				-- 	end
+				-- },
+				vale_ls = {},
 				r_language_server = {},
+				ocamllsp = {},
+				-- harper_ls = {},
+
 			}
 		},
 		config = function(_, opts)
@@ -89,30 +123,27 @@ require("lazy").setup({
 	{
 		'saghen/blink.cmp',
 		-- optional: provides snippets for the snippet source
-		dependencies = { 'L3MON4D3/LuaSnip' },
+		dependencies = {
+			-- { 'L3MON4D3/LuaSnip',    version = 'v2.*', lazy = true },
+			{ 'saghen/blink.compat', lazy = true, ft = "markdown" },
+			{
+				'Kaiser-Yang/blink-cmp-dictionary',
+				dependencies = { 'nvim-lua/plenary.nvim' },
+				ft = "markdown"
+			},
+		},
+		lazy = true,
 
-		version = 'v0.*', -- use a release tag to download pre-built binaries
+		version = '*', -- use a release tag to download pre-built binaries
 		opts = {
 			-- 'default' for mappings similar to built-in completion
 			-- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
 			-- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
 			-- see the "default configuration" section below for full documentation on how to define
 			-- your own keymap.
-			snippets = {
-				expand = function(snippet) require('luasnip').lsp_expand(snippet) end,
-				active = function(filter)
-					if filter and filter.direction then
-						return require('luasnip').jumpable(filter.direction)
-					end
-					return require('luasnip').in_snippet()
-				end,
-				jump = function(direction) require('luasnip').jump(direction) end,
-			},
+			-- snippets = { preset = 'luasnip' },
 			keymap = {
 				preset = 'super-tab',
-				cmdline = {
-					preset = 'super-tab'
-				}
 			},
 
 			appearance = {
@@ -123,11 +154,43 @@ require("lazy").setup({
 			-- default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, via `opts_extend`
 			sources = {
-				default = {
-					'luasnip', 'lsp', 'path', 'buffer'
-				},
+				default = function(ctx)
+					if vim.bo.filetype ~= 'markdown' then
+						return { 'lsp', 'path', 'buffer' }
+						-- elseif success and node and in_math(node) and vim.treesitter.get_parser(0, "latex") then
+						-- 	return { 'snippets', 'obsidian', 'obsidian_tags', 'obsidian_new',
+						-- 		'lsp', 'path', 'buffer' }
+					else
+						return { 'lsp', 'snippets', 'dictionary', 'path', 'buffer', 'markdown' }
+					end
+				end,
+				-- default = {
+				-- 	'snippets', 'obsidian', 'obsidian_new', 'obsidian_tags', 'lsp', 'path', 'buffer'
+				-- },
 				providers = {
-					luasnip = {
+					dictionary = {
+						module = 'blink-cmp-dictionary',
+						name = 'Dict',
+						-- Make sure this is at least 2.
+						-- 3 is recommended
+						min_keyword_length = 3,
+						max_items = 8,
+						opts = {
+							dictionary_files = { vim.fn.expand('~/.config/nvim/spell/en.utf-8.add'), vim.fn.expand('~/words.txt') }
+						},
+					},
+					-- obsidian = {
+					-- 	name = "obsidian",
+					-- 	score_offset = 1
+					-- },
+					-- obsidian_new = {
+					-- 	module = "blink.compat.source",
+					-- },
+					-- obsidian_tags = {
+					-- 	name = "obsidian_tags",
+					-- 	score_offset = 1
+					-- },
+					snippets = {
 						score_offset = 2,
 					},
 					lsp = {
@@ -135,9 +198,21 @@ require("lazy").setup({
 					},
 					buffer = {
 						score_offset = 1
+					},
+					markdown = {
+						name = 'RenderMarkdown',
+						module = 'render-markdown.integ.blink',
+						fallbacks = { 'lsp' },
 					}
 				}
 			},
+			completion = {
+				menu = {
+					draw = {
+						treesitter = { 'lsp' },
+					}
+				}
+			}
 
 			-- signature = { enabled = true }
 		},
@@ -145,7 +220,11 @@ require("lazy").setup({
 	},
 	{
 		"L3MON4D3/LuaSnip",
-		build = "make install_jsregexp"
+		build = "make install_jsregexp",
+		lazy = true,
+		config = function()
+			require("luasnip-config")
+		end
 	},
 	{
 		'nvim-treesitter/nvim-treesitter',
@@ -153,13 +232,13 @@ require("lazy").setup({
 		build = ':TSUpdate',
 		event = { 'BufReadPre', 'BufNewFile' },
 		main = 'nvim-treesitter.configs',
-		opts = { highlight = { enable = true }, }
-	},
-	-- 'saadparwaiz1/cmp_luasnip',
-	{
-		"folke/trouble.nvim",
-		lazy = true,
-		opts = {},
+		-- init = function()
+		-- 	vim.treesitter.language.register('scheme', 'racket') -- the someft filetype will use the python parser and queries.
+		-- 	vim.filetype.add({
+		-- 		pattern = { [".*/hypr/.*%.conf"] = "hyprlang" },
+		-- 	})
+		-- end,
+		opts = require("tree-sitter")
 	},
 	-- Testing
 	-- R
@@ -170,28 +249,28 @@ require("lazy").setup({
 	},
 	-- File navigation tools
 	{
-		'goolord/alpha-nvim',
-		config = function()
-			require 'alpha-config'
-			require 'alpha'.setup(require 'alpha.themes.dashboard'.config)
-		end
-	},
-	{
 		'nvim-telescope/telescope.nvim',
 		tag = '0.1.5',
-		dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' }
+		dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
+		lazy = true,
+		cmd = { "Telescope" },
+		opts = {
+			defaults = {
+				border = {},
+				borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
+			}
+		}
 	},
 	-- Editing tools
 	-- "tpope/vim-surround",
-	{
-		'ggandor/leap.nvim',
-		config = function()
-			require('leap').create_default_mappings()
-		end
-	},
 	'Konfekt/vim-alias',
-	'tpope/vim-fugitive',
-	'tpope/vim-eunuch',
+	-- 'tpope/vim-fugitive',
+	{
+		'tpope/vim-eunuch',
+		lazy = true,
+		cmd = { "Remove", "Delete", "Move", "Chmod", "Mkdir", "SudoWrite", "SudoEdit" },
+
+	},
 	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
@@ -207,7 +286,11 @@ require("lazy").setup({
 		}
 	},
 	-- Aesthetics
-	'nvim-lualine/lualine.nvim',
+	{
+		'nvim-lualine/lualine.nvim',
+		event = "VeryLazy",
+		opts = {},
+	},
 	'nvim-tree/nvim-web-devicons',
 	-- 'lukas-reineke/indent-blankline.nvim',
 	-- {
@@ -221,43 +304,69 @@ require("lazy").setup({
 		"folke/tokyonight.nvim",
 		lazy = false,
 		priority = 1000,
-		opts = {},
+		opts = {
+			style = "night",
+			--transparent = vim.g.neovide == nil
+			-- transparent = true,
+			on_colors = function(colors)
+				colors.bg = "#000000"
+				colors.bg_float = "#000000"
+			end
+		},
 	},
 	{
-		"epwalsh/obsidian.nvim",
+		"obsidian-nvim/obsidian.nvim",
 		version = "*", -- recommended, use latest release instead of latest commit
 		lazy = true,
-		ft = "markdown",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-telescope/telescope.nvim"
-		}
-	},
-	{
-		"jbyuki/nabla.nvim",
-		ft = "markdown",
-	},
-	{
-		"3rd/image.nvim",
-		ft = "markdown",
-	},
-	{
-		"3rd/diagram.nvim",
-		ft = "markdown",
-		opts = { -- you can just pass {}, defaults below
-			renderer_options = {
-				mermaid = {
-					background = "transparent", -- nil | "transparent" | "white" | "#hex"
-					theme = "dark", -- nil | "default" | "dark" | "forest" | "neutral"
-					scale = 1, -- nil | 1 (default) | 2  | 3 | ...
-				},
-			}
 		},
-
+		opts = require("obsidian-config"),
+		cmd = { "ObsidianQuickSwitch", "ObsidianOpen", "ObsidianNew", "ObsidianToday", "ObsidianSearch" }
 	},
+	-- {
+	-- 	"3rd/image.nvim",
+	-- 	ft = "markdown",
+	-- },
+	-- {
+	-- 	"3rd/diagram.nvim",
+	-- 	ft = "markdown",
+	-- 	opts = { -- you can just pass {}, defaults below
+	-- 		renderer_options = {
+	-- 			mermaid = {
+	-- 				background = "transparent", -- nil | "transparent" | "white" | "#hex"
+	-- 				theme = "dark", -- nil | "default" | "dark" | "forest" | "neutral"
+	-- 				scale = 1, -- nil | 1 (default) | 2  | 3 | ...
+	-- 			},
+	-- 		}
+	-- 	},
+	--
+	-- },
 	{
 		'MeanderingProgrammer/render-markdown.nvim',
-		opts = {},
+		opts = {
+			bullet = {
+				-- Turn on / off list bullet rendering
+				enabled = true,
+				icons = { '●', '○', '◆', '◇' },
+				-- Padding to add to the left of bullet point
+				left_pad = 0,
+				-- Padding to add to the right of bullet point
+				right_pad = 0,
+				-- Highlight for the bullet icon
+				highlight = 'RenderMarkdownBullet',
+			},
+			checkbox = {
+				-- Turn on / off checkbox state rendering
+				enabled = true,
+			},
+			link = {
+				enabled = true,
+			},
+			heading = { enabled = true },
+			latex = { enabled = false },
+		},
 		dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
 		ft = "markdown",
 	},
@@ -267,6 +376,7 @@ require("lazy").setup({
 	},
 	{
 		"maxdulay/luasnip-latex-snippets.nvim",
+		enabled = true,
 		dependencies = { "L3MON4D3/LuaSnip", 'nvim-treesitter/nvim-treesitter' },
 		ft = { "markdown", "rmarkdown" },
 		config = function()
@@ -279,16 +389,10 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"epwalsh/pomo.nvim",
-		version = "*", -- Recommended, use latest release instead of latest commit
-		lazy = true,
-		cmd = { "TimerStart", "TimerRepeat", "TimerSession" },
-		dependencies = {
-			-- "rcarriga/nvim-notify",
-		},
-	},
-	{
 		"vifm/vifm.vim",
+		init = function()
+			vim.g.vifm_replace_netrw = true
+		end,
 	},
 	{
 		"folke/snacks.nvim",
@@ -296,53 +400,63 @@ require("lazy").setup({
 		lazy = false,
 		opts = {
 			bigfile = { enabled = true },
-			notifier = { enabled = true,  style = "minimal" },
+			notifier = { enabled = true, style = "minimal" },
 			quickfile = { enabled = true },
+			image = { enabled = true, img_dirs = { "../" }, doc = { inline = false } },
 			terminal = {
 				enabled = true,
 				win = { style = "terminal" },
 			},
-			indent = { enabled = true },
+			dashboard = require("snacks-dashboard-config"),
+			indent = { enabled = true, animate = { enabled = false } },
+			styles = {
+				snacks_image = {
+					border = "none"
+				},
+				notification_history = {
+					border = "none",
+					wo = { winhighlight = "Normal:pmenu" },
+					keys = { q = "close" },
+				}
+			}
 		},
 	},
+	-- optional lualine component to show captured events
+	-- when the profiler is running
+
+}, {
+	-- defaults = { lazy = true },
+	performance = {
+		cache = {
+			enabled = true,
+		},
+		rtp = {
+			disabled_plugins = {
+				"netrwPlugin",
+				"gzip",
+				"tarPlugin",
+				"tohtml",
+				"tutor",
+				"zipPlugin",
+			}
+		}
+	},
+	profiling = {
+		require = true,
+	}
 })
 -- Configs and setups
-vim.g.firenvim_config = {
-	globalSettings = { alt = "all" },
-	localSettings = {
-		[".*"] = {
-			cmdline  = "firenvim",
-			content  = "text",
-			priority = 0,
-			selector = "textarea",
-			takeover = "never"
-		}
-	}
-}
-require("luasnip.loaders.from_vscode").lazy_load()
-require("luasnip.loaders.from_snipmate").lazy_load()
-require("pomo-config")
-require("obsidian-config")
-require("luasnip-config")
+-- require("luasnip.loaders.from_vscode").lazy_load()
+-- require("luasnip.loaders.from_snipmate").lazy_load()
 require("lsp-config")
 require('keybindings')
-require('tree-sitter')
-require('lualine').setup()
-require('tokyonight').setup {
-	style = "night",
-	--transparent = vim.g.neovide == nil}
-	-- transparent = true,
-	on_colors = function(colors)
-		colors.bg = "#000000"
-		colors.bg_float = "#000000"
-	end
-}
+-- require('tree-sitter')
 
--- require("bufferline-config")
 -- default config
 -- vim settings
-vim.cmd('colorscheme tokyonight')
-vim.api.nvim_set_hl(0, "SnacksNormal", { link = "Normal" })
+--
+vim.cmd('colorscheme tokyonight-night')
+require("highlights")
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.cmd("syntax on")
@@ -355,8 +469,21 @@ vim.opt.smartindent = true
 vim.opt.ic = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-vim.opt.clipboard = "unnamed" -- vim.cmd("set clipboard=unnamedplus")
+-- vim.opt.clipboard = "unnamed" -- vim.cmd("set clipboard=unnamedplus")
 vim.opt.clipboard = "unnamedplus"
 vim.opt.linebreak = true
 vim.opt.termguicolors = true
-require('telescope-config')
+vim.opt.autochdir = true
+vim.opt.grepprg = "rg --vimgrep"
+-- vim.opt.spell = true
+-- vim.opt.spelllang="en_us"
+-- Please arrange the patterns for your favorite plugins by yourself.
+
+vim.api.nvim_create_autocmd("UIEnter", {
+	pattern = "*",
+	command = "LspStart"
+})
+-- vim.api.nvim_create_autocmd("BufNewFile", {
+-- 	pattern = "*",
+-- 	command = "LspStart"
+-- })

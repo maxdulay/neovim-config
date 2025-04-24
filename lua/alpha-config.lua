@@ -6,7 +6,7 @@ local function pick_color()
 	return colors[math.random(#colors)]
 end
 -- Set header
-dashboard.section.header.val = {
+dashboard.section.header.val = {	
 	[[                                                                       ]],
 	[[                                                                     ]],
 	[[       ████ ██████           █████      ██                     ]],

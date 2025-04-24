@@ -1,14 +1,10 @@
-vim.cmd("autocmd FileType markdown set conceallevel=2")
-vim.cmd("autocmd FileType markdown setlocal spell")
-vim.cmd("autocmd FileType markdown set spelllang=en_us")
-vim.cmd("autocmd FileType markdown inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u")
-vim.cmd("Alias backup G<Space>add<Space>.|G<Space>commit<Space>-a<Space>-m<Space>'Backup'|G<Space>push")
-vim.cmd("Alias os ObsidianQuickSwitch")
-vim.cmd("Alias oo ObsidianOpen")
-vim.cmd("Alias od ObsidianToday")
-vim.cmd("Alias notes vsplit|ObsidianQuickSwitch")
-vim.cmd("Alias nts vsplit|ObsidianQuickSwitch")
-require("obsidian").setup({
+-- vim.system({ 'cd', '/home/maxdu/Documents/Obsidian/Notes/', '&&', 'git', 'pull'}, { text = true }, function(obj)
+-- 	print(obj.code)
+-- 	print(obj.stdout)
+-- 	print(obj.stderr)
+-- end)
+--
+return {
 	-- A list of vault names and paths.
 	-- Each path should be the path to the vault root. If you use the Obsidian app, the vault root is the parent directory of the `.obsidian` folder.
 	-- You can also provide configuration overrides for each workspace through the `overrides` field.
@@ -48,6 +44,7 @@ require("obsidian").setup({
 	completion = {
 		-- Set to false to disable completion.
 		nvim_cmp = false,
+		blink = true,
 
 		-- Trigger completion at 2 chars.
 		min_chars = 2,
@@ -237,4 +234,5 @@ require("obsidian").setup({
 			return string.format("![%s](%s)", path.name, path)
 		end,
 	},
-})
+}
+-- })
